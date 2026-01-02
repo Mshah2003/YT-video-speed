@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "TurboSpeed & Ad Skipper: Video Speed Controller",
+  "version": "1.0.0",
+  "description": "Control the speed of YouTube ads and videos with a slider (0.5x - 16x)",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
