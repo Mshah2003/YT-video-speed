@@ -2,6 +2,25 @@ let speedController = null;
 let toggleButton = null;
 let currentVideo = null;
 
+// --- ADDED: Constant sync logic ---
+function startSpeedSync() {
+  setInterval(() => {
+    const slider = document.getElementById('speed-slider');
+    const videos = document.querySelectorAll('video');
+    
+    if (slider && videos.length > 0) {
+      const targetSpeed = parseFloat(slider.value);
+      
+      videos.forEach(video => {
+        // If the video speed doesn't match the slider (common during ads/new videos)
+        if (video.playbackRate !== targetSpeed) {
+          video.playbackRate = targetSpeed;
+        }
+      });
+    }
+  }, 500); // Checks every 0.5 seconds
+}
+
 function createToggleButton() {
   if (toggleButton) return;
 
@@ -29,10 +48,8 @@ function createToggleButton() {
 
   btn.addEventListener('mousemove', (e) => {
     if (!isClicking) return;
-
     const dx = Math.abs(e.clientX - clickStartX);
     const dy = Math.abs(e.clientY - clickStartY);
-
     if (dx > 5 || dy > 5) {
       makeDraggableButton(btn);
     }
@@ -41,7 +58,6 @@ function createToggleButton() {
   btn.addEventListener('click', (e) => {
     const dx = Math.abs(e.clientX - clickStartX);
     const dy = Math.abs(e.clientY - clickStartY);
-
     if (dx < 5 && dy < 5) {
       if (speedController) {
         speedController.style.display = speedController.style.display === 'none' ? 'block' : 'none';
@@ -113,6 +129,9 @@ function createSpeedController() {
   });
 
   makeDraggable(container);
+  
+  // Start the background sync as soon as the controller exists
+  startSpeedSync();
 }
 
 function applySpeedToVideos(speed) {
@@ -125,7 +144,6 @@ function applySpeedToVideos(speed) {
 function makeDraggable(element) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   const header = element.querySelector('.speed-header');
-
   header.onmousedown = dragMouseDown;
 
   function dragMouseDown(e) {
@@ -156,7 +174,6 @@ function makeDraggable(element) {
 
 function makeDraggableButton(element) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
   element.onmousedown = dragMouseDown;
 
   function dragMouseDown(e) {
@@ -207,4 +224,3 @@ observer.observe(document.body, {
 });
 
 checkForVideos();
-
